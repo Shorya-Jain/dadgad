@@ -9,7 +9,7 @@
   <body>
     <main>
       <h1>DADGAD Tabs</h1>
-      <p class="sub">Turn standard-tuning tabs and chord sheets into playable DADGAD.</p>
+      <p class="sub">Turn guitar tabs and chord sheets (any tuning, any capo) into playable DADGAD.</p>
 
       <section class="row">
         <input id="search" type="text" placeholder="Song name, e.g. artist – title" />
@@ -21,7 +21,24 @@
       </section>
       <p id="status" class="status" hidden></p>
 
-      <textarea id="input" spellcheck="false" placeholder="…or paste a standard-tuning tab / chord sheet here"></textarea>
+      <textarea id="input" spellcheck="false" placeholder="…or paste a tab / chord sheet here"></textarea>
+
+      <section class="row source">
+        <label>Tab's tuning
+          <input id="src-tuning" type="text" list="tunings" value="E A D G B E" spellcheck="false" />
+        </label>
+        <datalist id="tunings">
+          <option value="E A D G B E">Standard</option>
+          <option value="D A D G B E">Drop D</option>
+          <option value="Eb Ab Db Gb Bb Eb">Half step down</option>
+          <option value="D G D G B D">Open G</option>
+          <option value="D A D F# A D">Open D</option>
+          <option value="D A D G A D">DADGAD</option>
+        </datalist>
+        <label>Capo <input id="src-capo" type="number" min="0" max="12" value="0" /></label>
+        <label><input id="src-skip-low" type="checkbox" /> Capo skips low string</label>
+      </section>
+      <p id="detected" class="status" hidden></p>
 
       <section class="row controls">
         <label><input type="radio" name="mode" value="idiomatic" checked /> Idiomatic <small>(re-voice chords for DADGAD)</small></label>
@@ -32,7 +49,7 @@
       <section id="result" hidden>
         <div id="diagrams" class="diagrams"></div>
         <div class="out-head">
-          <h2>DADGAD</h2>
+          <h2 id="song-title">DADGAD</h2>
           <button id="copy-btn" class="secondary">Copy</button>
         </div>
         <pre id="output"></pre>

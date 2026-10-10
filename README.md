@@ -13,6 +13,11 @@ shapes, and the shape is chosen to stay close to where your hand already is.
   notes). Changed spots are marked `*`.
 - **Faithful mode:** keeps every note exactly as written and only re-fingers it.
 
+Tabs don't have to be in standard tuning. The app reads the tab's tuning and capo, including a
+partial capo that leaves the low string open, from its "Tuning:" notes or the string names on the
+tab lines. It fills in the **Tab's tuning / Capo** fields, which you can correct before converting.
+Notes about the original tuning, author credits and other preamble are left out of the result.
+
 ## Run it locally
 
 You need [Node.js](https://nodejs.org) 20 or newer.

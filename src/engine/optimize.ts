@@ -1,5 +1,5 @@
 import { identifyChord } from './chords';
-import { DADGAD, Frets, pitchClass, positionsFor } from './tuning';
+import { DADGAD, Frets, MAX_FRET, pitchClass, positionsFor } from './tuning';
 import { fingersNeeded, fretSpan, position, voicingsFor } from './voicings';
 
 export type Mode = 'faithful' | 'idiomatic';
@@ -61,12 +61,28 @@ export function assignments(pitches: number[]): Frets[] {
   return out;
 }
 
+const LOWEST = DADGAD[0];
+const HIGHEST = DADGAD[5] + MAX_FRET;
+
+/** Move notes outside DADGAD's range (e.g. from a high capo) by octaves until they fit. */
+function intoRange(p: number): number {
+  while (p < LOWEST) p += 12;
+  while (p > HIGHEST) p -= 12;
+  return p;
+}
+
 export function candidatesForNotes(pitches: number[], mode: Mode): Candidate[] {
   const cands: Candidate[] = assignments(pitches).map((frets) => ({
     frets,
     cost: staticCost(frets),
     revoiced: false,
   }));
+  if (cands.length === 0) {
+    // Some notes can't be played in DADGAD as written; octave-shift them rather than drop them.
+    for (const frets of assignments(pitches.map(intoRange))) {
+      cands.push({ frets, cost: staticCost(frets) + 2, revoiced: true });
+    }
+  }
 
   if (mode === 'idiomatic' && new Set(pitches.map(pitchClass)).size >= 3) {
     const sorted = [...new Set(pitches)].sort((a, b) => a - b);

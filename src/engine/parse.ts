@@ -1,8 +1,8 @@
 import { Chord, parseChord } from './chords';
-import { STANDARD } from './tuning';
+import { STANDARD_SOURCE, Source, sourcePitch } from './tuning';
 
 export interface Note {
-  string: number; // 0 = low E .. 5 = high e (standard tuning)
+  string: number; // 0 = lowest string .. 5 = highest, in the source tuning
   fret: number;
   pitch: number;
 }
@@ -17,6 +17,7 @@ export interface TabBlock {
   /** gaps[k][line] = text on that line before event k; gaps[events.length] is the tail. */
   gaps: string[][];
   events: TabEvent[];
+  labels: string[]; // string names written before each line ("e", "B", ...), "" if none
 }
 
 export interface ChordToken {
@@ -57,8 +58,10 @@ function parseChordLine(line: string): ChordToken[] | null {
   return chords > 0 ? tokens : null;
 }
 
-function parseBlock(lines: string[]): TabBlock {
-  const bodies = lines.map((l) => l.slice(PREFIX.exec(l)![0].length).trimEnd());
+function parseBlock(lines: string[], source: Source): TabBlock {
+  const prefixes = lines.map((l) => PREFIX.exec(l)![0]);
+  const labels = prefixes.map((p) => p.replace(/[\s|:]/g, ''));
+  const bodies = lines.map((l, i) => l.slice(prefixes[i].length).trimEnd());
   const len = Math.max(...bodies.map((b) => b.length));
   const padded = bodies.map((b) => b.padEnd(len, ' '));
 
@@ -92,20 +95,20 @@ function parseBlock(lines: string[]): TabBlock {
     width: sp.end - sp.start,
     notes: sp.runs.map((r) => {
       const string = 5 - r.line;
-      return { string, fret: r.fret, pitch: STANDARD[string] + r.fret };
+      return { string, fret: r.fret, pitch: sourcePitch(source, string, r.fret) };
     }),
   }));
-  return { gaps, events };
+  return { gaps, events, labels };
 }
 
-export function parse(text: string): Section[] {
+export function parse(text: string, source: Source = STANDARD_SOURCE): Section[] {
   const lines = text.replace(/\r\n?/g, '\n').split('\n');
   const out: Section[] = [];
   for (let i = 0; i < lines.length; ) {
     let j = i;
     while (j < lines.length && isTabLine(lines[j])) j++;
     if (j - i === 6) {
-      out.push({ kind: 'tab', block: parseBlock(lines.slice(i, j)) });
+      out.push({ kind: 'tab', block: parseBlock(lines.slice(i, j), source) });
       i = j;
       continue;
     }

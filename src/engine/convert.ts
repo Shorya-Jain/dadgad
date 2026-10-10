@@ -1,7 +1,7 @@
 import { Candidate, Mode, candidatesForNotes, choose } from './optimize';
-import { parse } from './parse';
+import { Section, parse } from './parse';
 import { Placement, renderChordLine, renderTab, variantLabel } from './render';
-import { Frets, fretsToString } from './tuning';
+import { Frets, STANDARD_SOURCE, Source, fretsToString, tuningName } from './tuning';
 import { voicingsFor } from './voicings';
 
 export interface ChordShape {
@@ -14,9 +14,48 @@ export interface ConvertResult {
   chords: ChordShape[];
 }
 
-/** Convert a standard-tuning tab or chord sheet to DADGAD. */
-export function convert(input: string, mode: Mode = 'idiomatic'): ConvertResult {
-  const sections = parse(input);
+const SECTION_HEADER = /^\s*\[[^\]]+\]\s*$/;
+const SEPARATOR = /^\s*[-=_*~#.]{3,}\s*$/;
+const METADATA =
+  /^\s*((tabbed|transcribed|arranged|written|tab|chords)\s+by|e-?mail|tuning|capo|author|difficulty|key|strumming|note|notes|tip|tips)\b/i;
+
+/**
+ * Keep only what you need to play: section headers, tabs, chord lines and lyrics.
+ * Drops the preamble before the music starts, separator lines, and notes about the
+ * original tuning/capo/author (a metadata line takes the rest of its paragraph with it).
+ */
+export function cleanSections(sections: Section[]): Section[] {
+  const isText = (s: Section): s is Extract<Section, { kind: 'text' }> => s.kind === 'text';
+  const start = sections.findIndex((s) => !isText(s) || SECTION_HEADER.test(s.line));
+  const out: Section[] = [];
+  let skipping = false;
+  for (const s of sections.slice(Math.max(start, 0))) {
+    if (!isText(s)) {
+      skipping = false;
+      out.push(s);
+      continue;
+    }
+    const blank = s.line.trim() === '';
+    if (blank) skipping = false;
+    else if (METADATA.test(s.line)) skipping = true;
+    if (skipping || SEPARATOR.test(s.line)) continue;
+    const prev = out[out.length - 1];
+    if (blank && (!prev || (isText(prev) && prev.line.trim() === ''))) continue; // collapse blank runs
+    out.push(s);
+  }
+  return out;
+}
+
+function describeSource(src: Source): string | null {
+  const standard = src.tuning.join() === STANDARD_SOURCE.tuning.join();
+  if (standard && src.capo === 0) return null;
+  const capo = src.capo ? `, capo ${src.capo}${src.capoSkipsLow ? ' (not on the low string)' : ''}` : '';
+  return `Converted from: ${standard ? 'standard' : tuningName(src.tuning)}${capo}`;
+}
+
+/** Convert a tab or chord sheet in the given source tuning (standard by default) to DADGAD. */
+export function convert(input: string, mode: Mode = 'idiomatic', source: Source = STANDARD_SOURCE): ConvertResult {
+  const sections = cleanSections(parse(input, source));
 
   // One slot per tab event or chord name, in song order, so the optimiser sees the whole song.
   const slots: Candidate[][] = [];
@@ -78,6 +117,8 @@ export function convert(input: string, mode: Mode = 'idiomatic'): ConvertResult 
   }
 
   const header = ['Tuning: DADGAD (low to high: D A D G A D)'];
+  const from = describeSource(source);
+  if (from) header.push(from);
   if (chords.length) {
     header.push('', 'Chord shapes (low D string first):');
     for (const c of chords) header.push(`  ${c.label.padEnd(8)} ${fretsToString(c.frets)}`);

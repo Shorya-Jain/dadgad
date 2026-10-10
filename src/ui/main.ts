@@ -1,6 +1,7 @@
 import { ChordShape, convert } from '../engine/convert';
+import { detectSource } from '../engine/detect';
 import type { Mode } from '../engine/optimize';
-import { DADGAD_LABELS } from '../engine/tuning';
+import { DADGAD_LABELS, Source, parseTuning, tuningName } from '../engine/tuning';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const input = $<HTMLTextAreaElement>('input');
@@ -28,10 +29,12 @@ $('fetch-btn').addEventListener('click', async () => {
   setStatus('Fetching…');
   try {
     const res = await fetch(`/api/fetch?url=${encodeURIComponent(url)}`);
-    const data = (await res.json()) as { text?: string; error?: string };
+    const data = (await res.json()) as { text?: string; title?: string; error?: string };
     if (!res.ok || !data.text) throw new Error(data.error ?? `HTTP ${res.status}`);
     input.value = data.text;
+    songTitle = data.title ?? '';
     setStatus('');
+    detect();
     run();
   } catch (e) {
     setStatus(`Couldn't fetch that page (${(e as Error).message}). Open it, copy the tab, and paste it below.`, true);
@@ -42,12 +45,51 @@ $('fetch-btn').addEventListener('click', async () => {
 
 $('convert-btn').addEventListener('click', run);
 document.querySelectorAll('input[name="mode"]').forEach((r) => r.addEventListener('change', () => input.value && run()));
+// New tab text: forget the old title and re-detect its tuning/capo.
+input.addEventListener('input', () => {
+  songTitle = '';
+  detect();
+});
+['src-tuning', 'src-capo', 'src-skip-low'].forEach((id) => $(id).addEventListener('change', () => input.value && run()));
 
 $('copy-btn').addEventListener('click', () => navigator.clipboard.writeText($('output').textContent ?? ''));
 
+let songTitle = '';
+const tuningInput = $<HTMLInputElement>('src-tuning');
+const capoInput = $<HTMLInputElement>('src-capo');
+const skipLowInput = $<HTMLInputElement>('src-skip-low');
+
+/** Fill the tuning/capo fields from what the tab says about itself. */
+function detect() {
+  const { source, found, unsure } = detectSource(input.value);
+  tuningInput.value = tuningName(source.tuning);
+  capoInput.value = String(source.capo);
+  skipLowInput.checked = source.capoSkipsLow;
+  const note = $<HTMLParagraphElement>('detected');
+  note.classList.toggle('warn', unsure);
+  if (unsure) note.textContent = "This tab mentions a tuning I couldn't read. Set the tab's tuning above before converting.";
+  else if (found.length) note.textContent = `Read from the tab: ${found.join(', ')}. Check these before converting.`;
+  note.hidden = !unsure && found.length === 0;
+}
+
+function readSource(): Source | null {
+  const tuning = parseTuning(tuningInput.value);
+  tuningInput.classList.toggle('invalid', !tuning);
+  if (!tuning) return null;
+  const capo = Math.max(0, Math.min(12, Number(capoInput.value) || 0));
+  return { tuning, capo, capoSkipsLow: skipLowInput.checked };
+}
+
 function run() {
+  const source = readSource();
+  if (!source) {
+    setStatus("The tab's tuning needs six note names, e.g. E A D G B E.", true);
+    return;
+  }
+  setStatus('');
   const mode = (document.querySelector('input[name="mode"]:checked') as HTMLInputElement).value as Mode;
-  const { text, chords } = convert(input.value, mode);
+  const { text, chords } = convert(input.value, mode, source);
+  $('song-title').textContent = songTitle || 'DADGAD';
   $('output').textContent = text;
   $('diagrams').replaceChildren(...chords.map(diagram));
   $('result').hidden = false;

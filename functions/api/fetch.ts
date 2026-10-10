@@ -16,14 +16,16 @@ function decodeEntities(s: string): string {
 }
 
 /** Ultimate Guitar embeds the page data as JSON in <div class="js-store" data-content="...">. */
-export function extractUltimateGuitar(html: string): string | null {
+export function extractUltimateGuitar(html: string): { text: string; title: string } | null {
   const m = /class="js-store"\s+data-content="([^"]*)"/.exec(html);
   if (!m) return null;
   try {
-    const store = JSON.parse(decodeEntities(m[1]));
-    const content: unknown = store?.store?.page?.data?.tab_view?.wiki_tab?.content;
+    const data = JSON.parse(decodeEntities(m[1]))?.store?.page?.data;
+    const content: unknown = data?.tab_view?.wiki_tab?.content;
     if (typeof content !== 'string') return null;
-    return content.replace(/\[\/?(tab|ch)\]/g, '');
+    const song = data?.tab?.song_name, artist = data?.tab?.artist_name;
+    const title = typeof song === 'string' ? (typeof artist === 'string' ? `${song} – ${artist}` : song) : '';
+    return { text: content.replace(/\[\/?(tab|ch)\]/g, ''), title };
   } catch {
     return null;
   }
@@ -50,6 +52,6 @@ export const onRequestGet = async ({ request }: { request: Request }) => {
   if (res.status === 404) return json({ error: 'page not found' }, 404);
   if (!res.ok) return json({ error: `site returned ${res.status} (probably bot protection)` }, 502);
 
-  const text = extractUltimateGuitar(await res.text());
-  return text ? json({ text }) : json({ error: 'could not find a tab on that page' }, 502);
+  const tab = extractUltimateGuitar(await res.text());
+  return tab ? json(tab) : json({ error: 'could not find a tab on that page' }, 502);
 };

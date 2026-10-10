@@ -33,3 +33,49 @@ export function pitchesOf(frets: Frets): number[] {
 export function fretsToString(frets: Frets): string {
   return frets.map((f) => (f === null ? 'x' : String(f))).join(' ');
 }
+
+// ---- Source (input) tuning: what the tab was written for ----
+
+export interface Source {
+  tuning: number[]; // MIDI pitch of each open string, low to high
+  capo: number; // fret numbers in the tab are relative to the capo
+  capoSkipsLow: boolean; // partial capo that leaves the low string open
+}
+
+export const STANDARD_SOURCE: Source = { tuning: STANDARD, capo: 0, capoSkipsLow: false };
+
+export function sourcePitch(src: Source, string: number, fret: number): number {
+  const capo = src.capoSkipsLow && string === 0 ? 0 : src.capo;
+  return src.tuning[string] + capo + fret;
+}
+
+const NOTE_PC: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+const NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+function notesIn(s: string, flats: boolean): number[] {
+  const re = flats ? /([A-Ga-g])([#♯b♭]?)/g : /([A-Ga-g])([#♯]?)/g;
+  return [...s.matchAll(re)].map((m) => {
+    const acc = m[2] === '#' || m[2] === '♯' ? 1 : m[2] === 'b' || m[2] === '♭' ? -1 : 0;
+    return pitchClass(NOTE_PC[m[1].toUpperCase()] + acc);
+  });
+}
+
+/**
+ * Read six note names (low to high) such as "DADGAD", "D A C A G d" or "Eb Ab Db Gb Bb Eb".
+ * Each string gets the octave closest to the standard-tuning string it replaces.
+ */
+export function parseTuning(s: string): number[] | null {
+  // A lowercase "b" can be a flat or the B string ("EADGbe"); try flats first.
+  let pcs = notesIn(s, true);
+  if (pcs.length !== 6) pcs = notesIn(s, false);
+  if (pcs.length !== 6) return null;
+  return pcs.map((pc, i) => {
+    const std = STANDARD[i];
+    const below = std - pitchClass(std - pc);
+    return std - below <= below + 12 - std ? below : below + 12;
+  });
+}
+
+export function tuningName(tuning: number[]): string {
+  return tuning.map((p) => NAMES[pitchClass(p)]).join(' ');
+}
