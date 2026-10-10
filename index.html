@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DADGAD Tabs</title>
+    <link rel="stylesheet" href="/src/ui/style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>DADGAD Tabs</h1>
+      <p class="sub">Turn standard-tuning tabs and chord sheets into playable DADGAD.</p>
+
+      <section class="row">
+        <input id="search" type="text" placeholder="Song name, e.g. artist – title" />
+        <button id="search-btn" class="secondary">Find tabs ↗</button>
+      </section>
+      <section class="row">
+        <input id="url" type="url" placeholder="Paste a tab page URL (ultimate-guitar.com)" />
+        <button id="fetch-btn" class="secondary">Fetch</button>
+      </section>
+      <p id="status" class="status" hidden></p>
+
+      <textarea id="input" spellcheck="false" placeholder="…or paste a standard-tuning tab / chord sheet here"></textarea>
+
+      <section class="row controls">
+        <label><input type="radio" name="mode" value="idiomatic" checked /> Idiomatic <small>(re-voice chords for DADGAD)</small></label>
+        <label><input type="radio" name="mode" value="faithful" /> Faithful <small>(exact notes)</small></label>
+        <button id="convert-btn">Convert</button>
+      </section>
+
+      <section id="result" hidden>
+        <div id="diagrams" class="diagrams"></div>
+        <div class="out-head">
+          <h2>DADGAD</h2>
+          <button id="copy-btn" class="secondary">Copy</button>
+        </div>
+        <pre id="output"></pre>
+      </section>
+    </main>
+    <script type="module" src="/src/ui/main.ts"></script>
+  </body>
+</html>

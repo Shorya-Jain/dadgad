@@ -1,0 +1,76 @@
+:root {
+  --bg: #faf8f4;
+  --fg: #1d1b18;
+  --muted: #6b665e;
+  --line: #ddd7cc;
+  --accent: #7a4b1f;
+  --card: #ffffff;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17150f;
+    --fg: #ece7dd;
+    --muted: #9a9387;
+    --line: #3a352c;
+    --accent: #d9a066;
+    --card: #211e17;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.5 system-ui, -apple-system, sans-serif;
+}
+main { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { margin: 0; font-size: 28px; }
+h2 { margin: 0; font-size: 18px; }
+.sub { color: var(--muted); margin: 4px 0 24px; }
+.row { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; align-items: center; }
+.row input[type='text'], .row input[type='url'] { flex: 1 1 240px; }
+input, textarea, button { font: inherit; color: inherit; }
+input[type='text'], input[type='url'], textarea {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+textarea {
+  width: 100%;
+  min-height: 260px;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 13px;
+  resize: vertical;
+}
+button {
+  background: var(--accent);
+  color: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+button.secondary { background: transparent; color: var(--accent); }
+button:disabled { opacity: 0.5; cursor: wait; }
+.controls { margin-top: 10px; gap: 16px; }
+.controls small { color: var(--muted); }
+.controls button { margin-left: auto; }
+.status { color: var(--muted); margin: 0 0 10px; }
+.status.error { color: #b3261e; }
+#result { margin-top: 28px; }
+.out-head { display: flex; justify-content: space-between; align-items: center; margin: 16px 0 8px; }
+pre {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 16px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.diagrams { display: flex; flex-wrap: wrap; gap: 12px; }
+.diagram { text-align: center; font-size: 13px; }
+.diagram svg { display: block; color: var(--fg); }
