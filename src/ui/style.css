@@ -57,7 +57,14 @@ button.secondary { background: transparent; color: var(--accent); }
 button:disabled { opacity: 0.5; cursor: wait; }
 .source { margin-top: 10px; gap: 16px; }
 .source label { display: flex; gap: 6px; align-items: center; color: var(--muted); white-space: nowrap; }
-.source input { color: var(--fg); }
+.source input, .source select { color: var(--fg); }
+.source select {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font: inherit;
+}
 #src-tuning { width: 11em; font-family: ui-monospace, Menlo, monospace; }
 #src-capo { width: 4em; }
 #src-tuning.invalid { border-color: #b3261e; }

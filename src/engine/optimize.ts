@@ -124,7 +124,11 @@ function positionsPitch(frets: Frets, s: number): number {
 
 /** Viterbi: pick one candidate per slot minimising total static + transition cost. */
 export function choose(slots: Candidate[][]): number[] {
-  if (slots.length === 0) return [];
+  return bestPath(slots).picks;
+}
+
+export function bestPath(slots: Candidate[][]): { picks: number[]; cost: number } {
+  if (slots.length === 0) return { picks: [], cost: 0 };
   let cost = slots[0].map((c) => c.cost);
   const back: number[][] = [];
   for (let i = 1; i < slots.length; i++) {
@@ -141,7 +145,8 @@ export function choose(slots: Candidate[][]): number[] {
     });
     back.push(ptr);
   }
-  const picks = [cost.indexOf(Math.min(...cost))];
+  const total = Math.min(...cost);
+  const picks = [cost.indexOf(total)];
   for (let i = back.length - 1; i >= 0; i--) picks.unshift(back[i][picks[0]]);
-  return picks;
+  return { picks, cost: total };
 }

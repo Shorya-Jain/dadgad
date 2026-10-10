@@ -1,5 +1,6 @@
 import { ChordShape, convert } from '../engine/convert';
 import { detectSource } from '../engine/detect';
+import { CAPO_RANGE, KEY_RANGE, KeyOptions } from '../engine/key';
 import type { Mode } from '../engine/optimize';
 import { DADGAD_LABELS, Source, parseTuning, tuningName } from '../engine/tuning';
 
@@ -50,7 +51,28 @@ input.addEventListener('input', () => {
   songTitle = '';
   detect();
 });
-['src-tuning', 'src-capo', 'src-skip-low'].forEach((id) => $(id).addEventListener('change', () => input.value && run()));
+['src-tuning', 'src-capo', 'src-skip-low', 'key-amount'].forEach((id) => $(id).addEventListener('change', () => input.value && run()));
+
+const keyAmount = $<HTMLSelectElement>('key-amount');
+const keyCapo = $<HTMLInputElement>('key-capo');
+
+/** Options depend on the mode: semitone shifts, or capo frets that keep the original key. */
+function fillKeyOptions() {
+  const capo = keyCapo.checked;
+  const opts: [string, string][] = [['auto', 'Auto (best for DADGAD)']];
+  if (capo) for (const c of CAPO_RANGE) opts.push([String(c), c === 0 ? 'No capo' : `Capo ${c}`]);
+  else for (const s of KEY_RANGE) opts.push([String(s), s === 0 ? 'Original key' : `${s > 0 ? '+' : '−'}${Math.abs(s)} semitone${Math.abs(s) > 1 ? 's' : ''}`]);
+  keyAmount.replaceChildren(...opts.map(([value, label]) => Object.assign(document.createElement('option'), { value, textContent: label })));
+}
+fillKeyOptions();
+keyCapo.addEventListener('change', () => {
+  fillKeyOptions();
+  if (input.value) run();
+});
+
+function readKey(): KeyOptions {
+  return { kind: keyCapo.checked ? 'capo' : 'key', amount: keyAmount.value === 'auto' ? 'auto' : Number(keyAmount.value) };
+}
 
 $('copy-btn').addEventListener('click', () => navigator.clipboard.writeText($('output').textContent ?? ''));
 
@@ -88,7 +110,16 @@ function run() {
   }
   setStatus('');
   const mode = (document.querySelector('input[name="mode"]:checked') as HTMLInputElement).value as Mode;
-  const { text, chords } = convert(input.value, mode, source);
+  const requested = readKey();
+  const { text, chords, key } = convert(input.value, mode, source, requested);
+  const keyNote = $<HTMLParagraphElement>('key-note');
+  keyNote.hidden = requested.amount !== 'auto';
+  keyNote.textContent =
+    key.amount === 0
+      ? 'Auto: the original key already suits DADGAD.'
+      : key.kind === 'capo'
+        ? `Auto chose capo ${key.amount}.`
+        : `Auto chose ${key.amount > 0 ? 'up' : 'down'} ${Math.abs(key.amount)} semitone${Math.abs(key.amount) > 1 ? 's' : ''}.`;
   $('song-title').textContent = songTitle || 'DADGAD';
   $('output').textContent = text;
   $('diagrams').replaceChildren(...chords.map(diagram));

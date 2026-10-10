@@ -52,7 +52,7 @@ function chordDifficulty(frets: Frets, chord: Chord): number {
     fretSpan(frets) * 0.8 +
     interiorMutes * 3 + // muting an inner string while strumming is awkward
     trailingMutes * 0.5 +
-    position(frets) * 0.08 -
+    position(frets) * 0.3 - // prefer shapes near the nut unless a high one saves a lot of travel
     opens * 0.3 -
     sounding.length * 0.2 +
     missingFifth * 0.5 +
