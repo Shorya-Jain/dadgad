@@ -10,7 +10,7 @@
     "test": "vitest run",
     "chords": "tsx scripts/build-chord-library.ts",
     "pages:dev": "npm run build && wrangler pages dev dist",
-    "deploy": "npm run build && wrangler pages deploy dist --project-name dadgad"
+    "deploy": "npm run build && wrangler pages deploy dist --project-name dadgad --branch main"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
