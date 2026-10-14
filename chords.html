@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DADGAD Chords</title>
+    <link rel="stylesheet" href="/src/ui/style.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a href="/">Converter</a>
+      <a href="/chords.html" aria-current="page">Chords</a>
+      <a href="/tuner.html">Tuner</a>
+    </nav>
+    <main>
+      <h1>DADGAD Chords</h1>
+      <p class="sub">Every saved shape, low D string on the left. ○ = open string, × = don't play.</p>
+
+      <section class="row">
+        <input id="search" type="text" placeholder="Search, e.g. F#m7, Bbmaj7, D/F#" spellcheck="false" />
+        <select id="quality"></select>
+      </section>
+      <div id="roots" class="roots"></div>
+
+      <div id="list" class="chord-list"></div>
+    </main>
+    <script type="module" src="/src/ui/chords.ts"></script>
+  </body>
+</html>

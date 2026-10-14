@@ -18,6 +18,14 @@ partial capo that leaves the low string open, from its "Tuning:" notes or the st
 tab lines. It fills in the **Tab's tuning / Capo** fields, which you can correct before converting.
 Notes about the original tuning, author credits and other preamble are left out of the result.
 
+## Pages
+
+- **Converter** (`/`): tab or chord sheet in, DADGAD out.
+- **Chords** (`/chords.html`): every saved DADGAD shape, by root and chord type, or search any
+  chord name (slash chords like `D/F#` are worked out on the fly).
+- **Tuner** (`/tuner.html`): uses the microphone (the browser asks first) to tune each string
+  to D A D G A D. Auto mode picks the nearest string, or tap a string to lock to it.
+
 ## Run it locally
 
 You need [Node.js](https://nodejs.org) 20 or newer.

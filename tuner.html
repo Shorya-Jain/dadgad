@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DADGAD Tuner</title>
+    <link rel="stylesheet" href="/src/ui/style.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a href="/">Converter</a>
+      <a href="/chords.html">Chords</a>
+      <a href="/tuner.html" aria-current="page">Tuner</a>
+    </nav>
+    <main class="tuner-page">
+      <h1>DADGAD Tuner</h1>
+      <p class="sub">Play one string at a time. Low to high: D A D G A D.</p>
+
+      <div class="gauge-wrap">
+        <svg id="gauge" viewBox="0 0 400 300" role="img" aria-label="Tuning gauge"></svg>
+        <div id="reading" class="reading">Press Start and play a string</div>
+      </div>
+
+      <div id="strings" class="strings"></div>
+      <div class="row tuner-controls">
+        <button id="start-btn">Start tuner</button>
+      </div>
+      <p id="mic-status" class="status" hidden></p>
+    </main>
+    <script type="module" src="/src/ui/tuner.ts"></script>
+  </body>
+</html>

@@ -5,6 +5,8 @@
   --line: #ddd7cc;
   --accent: #7a4b1f;
   --card: #ffffff;
+  --good: #2f7d4b;
+  --close: #eba73c;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -26,6 +28,73 @@ body {
   font: 15px/1.5 system-ui, -apple-system, sans-serif;
 }
 main { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
+
+/* ---- Nav ---- */
+.nav {
+  display: flex;
+  gap: 4px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 14px 16px 0;
+}
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+.nav a:hover { color: var(--fg); }
+.nav a[aria-current='page'] { color: var(--fg); background: var(--card); border: 1px solid var(--line); }
+
+/* ---- Pill buttons (tuner strings, chord roots) ---- */
+.roots, .strings { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+button.string-btn {
+  background: var(--card);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+}
+button.string-btn.active { border-color: var(--accent); color: var(--accent); }
+button.string-btn.detected { background: var(--good); border-color: var(--good); color: #fff; }
+
+/* ---- Chord directory ---- */
+#quality {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: var(--fg);
+  font: inherit;
+}
+.chord-list { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.chord-card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+.chord-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.chord-head span { color: var(--muted); font-size: 13px; }
+
+/* ---- Tuner ---- */
+.tuner-page { text-align: center; }
+.tuner-page .strings, .tuner-controls { justify-content: center; }
+.gauge-wrap {
+  max-width: 460px;
+  margin: 8px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 16px 20px;
+}
+#gauge { width: 100%; height: auto; display: block; }
+#gauge .gauge-line { stroke: var(--fg); }
+#gauge .zone-close { stroke: var(--close); }
+#gauge .zone-good { stroke: var(--good); }
+#gauge .gauge-label { fill: var(--fg); font-size: 20px; }
+#gauge .gauge-target { fill: var(--fg); font-size: 26px; font-weight: 600; }
+#gauge .needle { transition: transform 0.12s ease-out; }
+#gauge .needle-body { fill: var(--fg); }
+#gauge .needle.idle .needle-body { opacity: 0.25; }
+#gauge .hub { fill: var(--muted); transition: fill 0.15s; }
+#gauge[data-state='good'] .hub { fill: var(--good); }
+#gauge[data-state='close'] .hub { fill: var(--close); }
+.reading { font-size: 22px; margin-top: 6px; min-height: 1.5em; }
 h1 { margin: 0; font-size: 28px; }
 h2 { margin: 0; font-size: 18px; }
 .sub { color: var(--muted); margin: 4px 0 24px; }
