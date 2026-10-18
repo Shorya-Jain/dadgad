@@ -119,6 +119,9 @@ function update(freq: number | null) {
 
 async function start() {
   micStatus.hidden = true;
+  // The browser may now be showing its permission popup; say so, or Start looks like it did nothing.
+  reading.textContent = 'Allow microphone access to start…';
+  startBtn.disabled = true;
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
@@ -148,12 +151,15 @@ async function start() {
       stop = null;
     };
   } catch (e) {
+    reading.textContent = 'Press Start and play a string';
     micStatus.hidden = false;
     micStatus.classList.add('error');
     micStatus.textContent =
       (e as Error).name === 'NotAllowedError'
         ? 'Microphone access was blocked. Allow it in your browser’s site settings, then try again.'
         : `Couldn't start the microphone (${(e as Error).message}).`;
+  } finally {
+    startBtn.disabled = false;
   }
 }
 

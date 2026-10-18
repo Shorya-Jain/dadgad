@@ -1,0 +1,18 @@
+{
+  "intents": {
+    "flow:drive-when-a-user-presses-start-tuner-the-page-at-once": {
+      "declaredAt": 1792315527288,
+      "id": "flow:drive-when-a-user-presses-start-tuner-the-page-at-once",
+      "state": "declared",
+      "statement": "When a user presses Start tuner, the page at once tells them to allow microphone access, so the button never looks dead while the browser asks for permission.",
+      "status": "proposed",
+      "subject": "drive-when-a-user-presses-start-tuner-th",
+      "surface": {
+        "flow": "drive-when-a-user-presses-start-tuner-the-page-at-once"
+      },
+      "updatedAt": 1792315527299
+    }
+  },
+  "subject": "drive-when-a-user-presses-start-tuner-th",
+  "version": 1
+}

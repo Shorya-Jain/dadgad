@@ -1,0 +1,18 @@
+{
+  "intents": {
+    "flow:converter-auto-key": {
+      "declaredAt": 1792315423626,
+      "id": "flow:converter-auto-key",
+      "state": "declared",
+      "statement": "A user pastes a standard-tuning tab with chords in E and clicks Convert. The page shows a DADGAD tab, Auto moves the song down 2 semitones, and the chords become D G A7 D, with no console errors.",
+      "status": "proposed",
+      "subject": "converter-auto-key",
+      "surface": {
+        "flow": "converter-auto-key"
+      },
+      "updatedAt": 1792315423627
+    }
+  },
+  "subject": "converter-auto-key",
+  "version": 1
+}

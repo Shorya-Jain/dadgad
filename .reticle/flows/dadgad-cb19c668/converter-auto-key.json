@@ -1,0 +1,77 @@
+{
+  "version": 2,
+  "name": "converter-auto-key",
+  "projectId": "dadgad-cb19c668",
+  "createdAt": 1792315423625,
+  "steps": [
+    {
+      "tool": "reticle_act_sequence",
+      "anchor": {
+        "kind": "role",
+        "role": "textbox",
+        "name": "…or paste a tab / chord sheet here"
+      },
+      "steps": [
+        {
+          "tool": "reticle_act",
+          "anchor": {
+            "kind": "role",
+            "role": "textbox",
+            "name": "…or paste a tab / chord sheet here"
+          },
+          "args": {
+            "value": "[Intro]\ne|-----------0-----|-----------------|\nB|-------1-------1-|-----3h5---3-----|\nG|-----2---2-------|---2-------2-----|\nD|---2-------------|-0-----------0---|\nA|-3---------------|-----------------|\nE|-----------------|-----------------|\n\n[Verse]\nE        A        B7       E\nla la la la la la la la"
+          },
+          "action": "fill",
+          "expect": {
+            "kind": "settled"
+          }
+        },
+        {
+          "tool": "reticle_act",
+          "anchor": {
+            "kind": "role",
+            "role": "button",
+            "name": "Convert"
+          },
+          "args": {},
+          "action": "click",
+          "expect": {
+            "kind": "allOf",
+            "predicates": [
+              {
+                "kind": "text",
+                "contains": "Tuning: DADGAD (low to high: D A D G A D)"
+              },
+              {
+                "kind": "text",
+                "contains": "Auto chose down 2 semitones."
+              },
+              {
+                "kind": "text",
+                "contains": "D        G        A7       D"
+              },
+              {
+                "kind": "console",
+                "level": "error",
+                "absent": true
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "startPath": "/",
+  "intent": "A user pastes a standard-tuning tab with chords in E and clicks Convert. The page shows a DADGAD tab, Auto moves the song down 2 semitones, and the chords become D G A7 D, with no console errors.",
+  "requires": [
+    {
+      "kind": "route",
+      "pathname": "/"
+    }
+  ],
+  "author": {
+    "agent": "claude-code"
+  },
+  "intentId": "flow:converter-auto-key"
+}

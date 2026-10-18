@@ -1,0 +1,65 @@
+{
+  "version": 2,
+  "name": "drive-when-a-user-presses-start-tuner-the-page-at-once",
+  "projectId": "dadgad-cb19c668",
+  "createdAt": 1792315527255,
+  "steps": [
+    {
+      "tool": "reticle_act",
+      "anchor": {
+        "kind": "role",
+        "role": "button",
+        "name": "Start tuner"
+      },
+      "args": {},
+      "action": "click",
+      "expect": {
+        "kind": "allOf",
+        "predicates": [
+          {
+            "kind": "anyOf",
+            "predicates": [
+              {
+                "kind": "text",
+                "contains": "Allow microphone access to start"
+              },
+              {
+                "kind": "text",
+                "contains": "Listening… play one string"
+              },
+              {
+                "kind": "text",
+                "contains": "Microphone access was blocked"
+              }
+            ]
+          },
+          {
+            "kind": "console",
+            "level": "error",
+            "absent": true
+          }
+        ]
+      },
+      "timeoutMs": 8000,
+      "page": "/tuner.html"
+    }
+  ],
+  "startPath": "/tuner.html",
+  "intent": "When a user presses Start tuner, the page at once tells them to allow microphone access, so the button never looks dead while the browser asks for permission.",
+  "requires": [
+    {
+      "kind": "route",
+      "pathname": "/tuner.html"
+    }
+  ],
+  "ensures": [
+    {
+      "kind": "route",
+      "pathname": "/tuner.html"
+    }
+  ],
+  "author": {
+    "agent": "claude-code"
+  },
+  "intentId": "flow:drive-when-a-user-presses-start-tuner-the-page-at-once"
+}

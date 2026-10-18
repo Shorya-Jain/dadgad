@@ -3,3 +3,6 @@ dist
 .wrangler
 .DS_Store
 .claude/settings.local.json
+.reticle/runs
+.reticle/visual
+.reticle/sessions

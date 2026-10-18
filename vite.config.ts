@@ -1,8 +1,10 @@
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
+import { reticle } from '@reticlehq/vite-plugin';
 // Three pages: converter (index), chord directory, tuner.
 export default defineConfig({
+  plugins: [reticle({ port: 4400 })],
   build: {
     rollupOptions: {
       input: {

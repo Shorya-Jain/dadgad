@@ -1,0 +1,18 @@
+{
+  "intents": {
+    "flow:tuner-start-feedback": {
+      "declaredAt": 1792315506731,
+      "id": "flow:tuner-start-feedback",
+      "state": "declared",
+      "statement": "When a user presses Start tuner, the page at once tells them to allow microphone access, so the button never looks dead while the browser asks for permission.",
+      "status": "proposed",
+      "subject": "tuner-start-feedback",
+      "surface": {
+        "flow": "tuner-start-feedback"
+      },
+      "updatedAt": 1792315506735
+    }
+  },
+  "subject": "tuner-start-feedback",
+  "version": 1
+}

@@ -1,0 +1,110 @@
+{
+  "version": 2,
+  "name": "tuner-start-feedback",
+  "projectId": "dadgad-cb19c668",
+  "createdAt": 1792315506731,
+  "steps": [
+    {
+      "tool": "reticle_act_sequence",
+      "anchor": {
+        "kind": "role",
+        "role": "button",
+        "name": "G"
+      },
+      "steps": [
+        {
+          "tool": "reticle_act",
+          "anchor": {
+            "kind": "role",
+            "role": "button",
+            "name": "G"
+          },
+          "args": {},
+          "action": "click",
+          "expect": {
+            "kind": "allOf",
+            "predicates": [
+              {
+                "kind": "text",
+                "contains": "Major · G B D"
+              },
+              {
+                "kind": "text",
+                "contains": "Minor · G A# D"
+              },
+              {
+                "kind": "console",
+                "level": "error",
+                "absent": true
+              }
+            ]
+          }
+        },
+        {
+          "tool": "reticle_act",
+          "anchor": {
+            "kind": "role",
+            "role": "textbox",
+            "name": "Search, e.g. F#m7, Bbmaj7, D/F#"
+          },
+          "args": {
+            "value": "D/F#"
+          },
+          "action": "fill",
+          "expect": {
+            "kind": "allOf",
+            "predicates": [
+              {
+                "kind": "text",
+                "contains": "Major · F# D A"
+              },
+              {
+                "kind": "text",
+                "contains": "Major · G B D",
+                "absent": true
+              }
+            ]
+          }
+        },
+        {
+          "tool": "reticle_act",
+          "anchor": {
+            "kind": "role",
+            "role": "textbox",
+            "name": "Search, e.g. F#m7, Bbmaj7, D/F#"
+          },
+          "args": {
+            "value": "Hzz"
+          },
+          "action": "fill",
+          "expect": {
+            "kind": "allOf",
+            "predicates": [
+              {
+                "kind": "text",
+                "contains": "isn't a chord name I recognise"
+              },
+              {
+                "kind": "console",
+                "level": "error",
+                "absent": true
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "startPath": "/chords.html",
+  "intent": "When a user presses Start tuner, the page at once tells them to allow microphone access, so the button never looks dead while the browser asks for permission.",
+  "requires": [
+    {
+      "kind": "route",
+      "pathname": "/chords.html"
+    }
+  ],
+  "author": {
+    "agent": "claude-code"
+  },
+  "intentId": "flow:tuner-start-feedback"
+}

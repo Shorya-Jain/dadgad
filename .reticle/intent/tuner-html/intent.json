@@ -1,0 +1,51 @@
+{
+  "intents": {
+    "inline:when-a-user-presses-start-tuner-the-page-at-once-47821181": {
+      "binding": {
+        "kind": "allOf",
+        "predicates": [
+          {
+            "kind": "anyOf",
+            "predicates": [
+              {
+                "contains": "Allow microphone access to start",
+                "kind": "text"
+              },
+              {
+                "contains": "Listening… play one string",
+                "kind": "text"
+              },
+              {
+                "contains": "Microphone access was blocked",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "absent": true,
+            "kind": "console",
+            "level": "error"
+          }
+        ]
+      },
+      "declaredAt": 1792315498788,
+      "id": "inline:when-a-user-presses-start-tuner-the-page-at-once-47821181",
+      "provenBy": {
+        "at": 1792315500019,
+        "grade": "presence",
+        "runId": "drive-lease-ccaf06ad-8aa1-456c-b3c6-479cf69e163c",
+        "verdictId": "reticle_act_and_wait:1792315500019"
+      },
+      "state": "proved",
+      "statement": "When a user presses Start tuner, the page at once tells them to allow microphone access, so the button never looks dead while the browser asks for permission.",
+      "status": "proved",
+      "subject": "tuner-html",
+      "surface": {
+        "route": "/tuner.html"
+      },
+      "updatedAt": 1792315500032
+    }
+  },
+  "subject": "tuner-html",
+  "version": 1
+}

@@ -1,0 +1,18 @@
+{
+  "intents": {
+    "flow:chords-filter-and-search": {
+      "declaredAt": 1792315437596,
+      "id": "flow:chords-filter-and-search",
+      "state": "declared",
+      "statement": "A user picks the root G and sees the G major and G minor cards with their notes. A search for D/F# shows only that chord. A search for a name that is not a chord shows a clear message. The console shows no errors.",
+      "status": "proposed",
+      "subject": "chords-filter-and-search",
+      "surface": {
+        "flow": "chords-filter-and-search"
+      },
+      "updatedAt": 1792315437601
+    }
+  },
+  "subject": "chords-filter-and-search",
+  "version": 1
+}
